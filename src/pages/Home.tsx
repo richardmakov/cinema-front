@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import MovieCard from '../components/MovieCard';
-import { useMoviesStore } from '../stores/moviesStore';
+import { useMoviesService } from '../services/moviesService';
 
 export default function Home() {
-  const { movies, fetchMovies } = useMoviesStore();
+  const { movies, fetchMovies } = useMoviesService();
 
   useEffect(() => {
     fetchMovies();
