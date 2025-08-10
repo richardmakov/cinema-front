@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import type { Session } from '../types/cinema';
+import { getSessions } from '../services/sessionsService';
 
 interface SessionsState {
   sessions: Session[];
   selectedSession?: Session;
+  fetchSessions: (movieId?: string) => Promise<void>;
   setSessions: (sessions: Session[]) => void;
   addSession: (session: Session) => void;
   selectSession: (id: string) => void;
@@ -13,6 +15,10 @@ interface SessionsState {
 export const useSessionsStore = create<SessionsState>((set) => ({
   sessions: [],
   selectedSession: undefined,
+  fetchSessions: async (movieId) => {
+    const sessions = await getSessions(movieId);
+    set({ sessions });
+  },
   setSessions: (sessions) => set({ sessions }),
   addSession: (session) =>
     set((state) => ({ sessions: [...state.sessions, session] })),
