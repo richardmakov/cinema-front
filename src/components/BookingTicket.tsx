@@ -93,9 +93,9 @@ export default function BookingTicket({ bookingId }: BookingTicketProps) {
                         <strong className="mono">{total} €</strong>
                     </div>
                     <div className="actions no-print">
-                        <button type="button" onClick={() => window.print()} aria-label="Imprimir entradas">
+                    {/*     <button type="button" onClick={() => window.print()} aria-label="Imprimir entradas">
                             Imprimir
-                        </button>
+                        </button> */}
                     </div>
                 </footer>
             </article>

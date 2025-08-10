@@ -143,6 +143,17 @@
     text-align: center;
 }
 
+.ticket__meta .label,
+.ticket__customer .label {
+    margin-right: .35rem;
+}
+
+.ticket__meta .label::after,
+.ticket__customer .label::after {
+    content: ": ";
+}
+
+
 @media (max-width: 560px) {
     .ticket__meta {
         grid-template-columns: 1fr;

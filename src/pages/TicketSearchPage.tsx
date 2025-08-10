@@ -34,7 +34,7 @@ export default function TicketSearchPage() {
   return (
     <div className="ticket-search">
       <h1>Buscar entradas</h1>
-      <p className="hint">Introduce tu <strong>código de reserva</strong> (UUID).</p>
+      <p className="hint">Introduce tu <strong>código de reserva</strong>.</p>
 
       <form onSubmit={onSubmit} className="search-form" role="search" aria-label="Buscar entradas por código">
         <input

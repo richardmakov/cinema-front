@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSessionsService } from "../services/sessionsService";
 import { useBookingsService } from "../services/bookingsService";
-import './BookingWidget.css'
+import { useNavigate } from "react-router-dom"; // 👈 NUEVO
+import "./BookingWidget.css";
 
 type Id = string | number;
 
@@ -13,6 +14,7 @@ interface Props {
 export default function BookingWidget({ sessionId, cols = 10 }: Props) {
     const { fetchSession, selectedSession } = useSessionsService();
     const { createBooking } = useBookingsService();
+    const navigate = useNavigate(); // 👈 NUEVO
 
     const [nombre, setNombre] = useState("");
     const [email, setEmail] = useState("");
@@ -30,20 +32,15 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
     const disponibles = selectedSession?.asientos_disponibles ?? 0;
     const precio = Number(selectedSession?.precio ?? 0);
 
-    // 1) Obtener ocupadas (usa el campo que tengas disponible)
     const occupiedSet = useMemo(() => {
-        // Opción A: el backend devuelve un array de asientos ocupados
         const direct =
             (selectedSession as any)?.asientos_ocupados ??
             (selectedSession as any)?.asientosOcupados ??
             [];
-
-        // Opción B: derivar de las reservas de la sesión (si vienen embebidas)
         const fromBookings =
             (selectedSession as any)?.reservas?.flatMap(
                 (r: any) => r.asientos_seleccionados ?? r.asientosSeleccionados ?? []
             ) ?? [];
-
         const seats = (direct.length ? direct : fromBookings) as string[];
         return new Set(seats);
     }, [selectedSession]);
@@ -69,56 +66,55 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
     const maxSelectable = Math.min(disponibles || 0, total || 0);
 
     const toggleSeat = (seat: string) => {
-        // 2) Evitar seleccionar ocupadas
         if (occupiedSet.has(seat)) return;
-
         setSelectedSeats((prev) => {
             const exists = prev.includes(seat);
             if (exists) return prev.filter((s) => s !== seat);
-            if (prev.length >= maxSelectable) return prev; // no superar disponibles
+            if (prev.length >= maxSelectable) return prev;
             return [...prev, seat];
         });
     };
 
-    const totalAPagar = useMemo(() => (selectedSeats.length * precio).toFixed(2), [selectedSeats, precio]);
+    const totalAPagar = useMemo(
+        () => (selectedSeats.length * precio).toFixed(2),
+        [selectedSeats, precio]
+    );
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMsg(null);
         setSuccessMsg(null);
 
-        if (!selectedSession) {
-            setErrorMsg("No se pudo cargar la sesión.");
-            return;
-        }
-        if (selectedSeats.length === 0) {
-            setErrorMsg("Selecciona al menos una butaca.");
-            return;
-        }
+        if (!selectedSession) return setErrorMsg("No se pudo cargar la sesión.");
+        if (selectedSeats.length === 0) return setErrorMsg("Selecciona al menos una butaca.");
         if (selectedSeats.length > (disponibles || 0)) {
-            setErrorMsg("La cantidad seleccionada supera las butacas disponibles.");
-            return;
+            return setErrorMsg("La cantidad seleccionada supera las butacas disponibles.");
         }
 
         try {
             setSubmitting(true);
             const booking = await createBooking({
-                session: selectedSession.id,
-                session_id: selectedSession.id,
+                session: selectedSession.id,          
+                session_id: selectedSession.id,       
                 nombre_cliente: nombre,
                 email_cliente: email,
                 telefono_cliente: telefono || undefined,
                 asientos_seleccionados: selectedSeats,
                 cantidad_asientos: selectedSeats.length,
             });
+
             setSuccessMsg(`¡Reserva creada! Código: ${booking.codigo_reserva}`);
+
+            // Limpieza (por si el widget permanece montado en otras rutas)
             setSelectedSeats([]);
             setNombre("");
             setEmail("");
             setTelefono("");
+            
+            navigate(`/ticket/${booking.codigo_reserva}`);
 
-            // 3) Refrescar la sesión para que se actualicen ocupadas
-            fetchSession(sessionId);
+            // Si te quedaras en la misma página, refrescaría la sesión:
+            // fetchSession(sessionId);
         } catch (err: any) {
             setErrorMsg(err?.message ?? "No se pudo crear la reserva.");
         } finally {
@@ -196,7 +192,7 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
                             required
                         />
                         <input
-                            placeholder="Teléfono (opcional)"
+                            placeholder="Teléfono"
                             value={telefono}
                             onChange={(e) => setTelefono(e.target.value)}
                         />

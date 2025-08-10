@@ -15,7 +15,7 @@ export default function Navbar() {
         </div>
         <nav className='navbar-links'>
           <Link to="/">Cartelera</Link>
-          <Link to="/ticket/search">Buscar Entradas</Link>
+          <Link to="/ticket/search">Buscar entradas</Link>
           <Link to="/admin">Admin</Link>
         </nav>
 
@@ -24,7 +24,7 @@ export default function Navbar() {
       </div>
       <div className={`submenu ${isOpen ? 'open' : 'close'}`}>
         <Link to="/" onClick={() => setIsOpen(false)}>Cartelera</Link>
-        <Link to="/ticket/search">Buscar Entradas</Link>
+        <Link to="/ticket/search" onClick={() => setIsOpen(false)}>Buscar entradas</Link>
         <Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link>
       </div>
     </>

@@ -521,6 +521,7 @@ export default function AdminPanel() {
             {editError && <p style={{ color: "red" }}>{editError}</p>}
           </form>
 
+          <hr className="divider" />
           {/* Crear nueva sesión para esta peli */}
           <h3 style={{ marginTop: "1rem" }}>Añadir nueva sesión</h3>
           <form
@@ -590,6 +591,7 @@ export default function AdminPanel() {
             )}
           </form>
 
+          <hr className="divider" />
           {/* --- Sesiones de esta película --- */}
           <h3 style={{ marginTop: "1rem" }}>Sesiones de esta película</h3>
 
