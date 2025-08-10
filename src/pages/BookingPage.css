@@ -25,10 +25,21 @@
     padding: clamp(1rem, 2vw, 1.5rem);
     box-shadow: var(--shadow-md);
     max-width: 100%;
+    width: 60%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
     box-sizing: border-box;
 }
 
 /* Responsive */
+
+@media (max-width: 920px) {
+    .booking-widget-container {
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .booking-page {
         margin: calc(64px + 16px) auto 2.5rem;
