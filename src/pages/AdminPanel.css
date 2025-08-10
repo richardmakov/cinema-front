@@ -1,7 +1,6 @@
 /* ===== Layout principal ===== */
 .admin-panel {
     margin: calc(80px + 24px) auto 4rem;
-    /* offset para navbar fijo */
     max-width: 1100px;
     color: var(--primary-color);
     padding: clamp(1rem, 3vw, 2rem);
@@ -425,6 +424,41 @@
     justify-content: flex-end;
 }
 
+.session-form,
+.session-fields-grid {
+    display: grid;
+    gap: .6rem;
+    /* Se auto-ajusta: 220px mínimo (ajusta a tu gusto) */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Alinea botones y mensajes al final del grid */
+.session-form-actions {
+    display: flex;
+    gap: .6rem;
+    align-items: center;
+    justify-self: end;
+    grid-column: 1 / -1;
+}
+
+.session-form label,
+.session-fields-grid label {
+    display: grid;
+    gap: .25rem;
+}
+
+.session-form input[type="number"],
+.session-fields-grid input[type="number"] {
+    min-width: 0;
+}
+
+.session-fields-grid {
+    display: grid;
+    gap: .6rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* desktop por defecto */
+}
+
 /* Animaciones */
 @keyframes fadeIn {
     from {
@@ -470,12 +504,20 @@
         gap: .5rem;
         flex-wrap: wrap;
     }
+
+    .session-fields-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 600px) {
     .admin-panel {
         margin: calc(64px + 16px) auto 2.5rem;
         padding: 1rem;
+    }
+
+    .session-form-actions {
+        justify-self: stretch;
     }
 
     .amr-info {
@@ -490,5 +532,9 @@
 
     .amr-actions {
         justify-self: end;
+    }
+
+    .session-fields-grid {
+        grid-template-columns: 1fr;
     }
 }

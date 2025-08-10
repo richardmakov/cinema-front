@@ -94,8 +94,8 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
         try {
             setSubmitting(true);
             const booking = await createBooking({
-                session: selectedSession.id,          
-                session_id: selectedSession.id,       
+                session: selectedSession.id,
+                session_id: selectedSession.id,
                 nombre_cliente: nombre,
                 email_cliente: email,
                 telefono_cliente: telefono || undefined,
@@ -105,16 +105,13 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
 
             setSuccessMsg(`¡Reserva creada! Código: ${booking.codigo_reserva}`);
 
-            // Limpieza (por si el widget permanece montado en otras rutas)
             setSelectedSeats([]);
             setNombre("");
             setEmail("");
             setTelefono("");
-            
+
             navigate(`/ticket/${booking.codigo_reserva}`);
 
-            // Si te quedaras en la misma página, refrescaría la sesión:
-            // fetchSession(sessionId);
         } catch (err: any) {
             setErrorMsg(err?.message ?? "No se pudo crear la reserva.");
         } finally {
@@ -206,21 +203,6 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
                     </form>
                 </>
             )}
-
-            <style>{`
-        .booking-widget { display: grid; gap: 1rem; }
-        .session-info { display: grid; gap: .25rem; }
-        .screen { text-align: center; padding: .5rem; background: #eee; border-radius: 8px; }
-        .legend { display: flex; align-items: center; gap: .75rem; font-size: .9rem; }
-        .legend-item { width: 1.2rem; height: 1.2rem; display: inline-block; vertical-align: middle; }
-        .seats-grid { display: grid; gap: .5rem; }
-        .seat-row { display: grid; grid-template-columns: repeat(${cols}, 1fr); gap: .4rem; }
-        .seat { border: 1px solid #ccc; padding: .4rem; border-radius: 6px; cursor: pointer; background: #fff; }
-        .seat.selected { outline: 2px solid #333; }
-        .seat.occupied { background: #ddd; color: #777; cursor: not-allowed; border-color: #bbb; }
-        .booking-form { display: grid; gap: .5rem; }
-        .summary { background: #f8f8f8; padding: .5rem; border-radius: 8px; }
-      `}</style>
         </div>
     );
 }

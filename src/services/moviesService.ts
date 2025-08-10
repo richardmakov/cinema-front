@@ -14,6 +14,7 @@ interface MoviesService {
   error?: string;
 
   fetchMovies: () => Promise<void>;
+  fetchAllMovies: () => Promise<void>;
   fetchMovie: (id: Id) => Promise<Movie | undefined>;
   fetchSessions: (id: Id) => Promise<Session[]>;
 
@@ -26,6 +27,7 @@ interface MoviesService {
   selectMovie: (id: Id) => void;
   clearSelection: () => void;
 }
+
 
 const idToKey = (id: Id) => String(id);
 
@@ -96,6 +98,17 @@ export const useMoviesService = create<MoviesService>()(
             loading: false,
             error: e?.message ?? "Error al cargar sesiones",
           });
+          throw e;
+        }
+      },
+
+      fetchAllMovies: async () => {
+        try {
+          set({ loading: true, error: undefined });
+          const movies = await fetchJson<Movie[]>("/movies/all/");
+          set({ movies, loading: false });
+        } catch (e: any) {
+          set({ loading: false, error: e?.message ?? "Error al cargar todas las películas" });
           throw e;
         }
       },

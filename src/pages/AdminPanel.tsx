@@ -61,7 +61,7 @@ function ConfirmModal({
 export default function AdminPanel() {
   const {
     movies,
-    fetchMovies,
+    fetchAllMovies,
     createMovie,
     updateMovie,
     deleteMovie,
@@ -118,9 +118,9 @@ export default function AdminPanel() {
 
   // Cargar data al montar
   useEffect(() => {
-    fetchMovies();     // GET /movies/
+    fetchAllMovies();     // GET /movies/
     fetchSessions();   // GET /sessions/ (para stats)
-  }, [fetchMovies, fetchSessions]);
+  }, [fetchAllMovies, fetchSessions]);
 
   // Crear película
   const handleMovieSubmit = async (e: React.FormEvent) => {
@@ -130,7 +130,7 @@ export default function AdminPanel() {
     try {
       await createMovie(movieForm);
       setMovieForm({ ...EMPTY_MOVIE });
-      await fetchMovies();
+      await fetchAllMovies();
     } catch (err: any) {
       setCreateError(err?.message ?? "No se pudo crear la película");
     } finally {
@@ -176,6 +176,7 @@ export default function AdminPanel() {
     setSessionForms(map);
   }, [editId, sessions]);
 
+
   // Guardar edición película
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,13 +185,15 @@ export default function AdminPanel() {
     setEditError(undefined);
     try {
       await updateMovie(editId, editForm);
-      await fetchMovies();
+      await fetchAllMovies();
+      cancelEdit();
     } catch (err: any) {
       setEditError(err?.message ?? "No se pudo actualizar la película");
     } finally {
       setSavingEdit(false);
     }
   };
+
 
   const cancelEdit = () => {
     setEditId(null);
@@ -275,7 +278,7 @@ export default function AdminPanel() {
       onConfirm: async () => {
         try {
           await deleteMovie(id);
-          await fetchMovies();
+          await fetchAllMovies();
           if (editId !== null && String(editId) === String(id)) cancelEdit();
         } finally {
           setConfirm((c) => ({ ...c, open: false }));
@@ -524,10 +527,7 @@ export default function AdminPanel() {
           <hr className="divider" />
           {/* Crear nueva sesión para esta peli */}
           <h3 style={{ marginTop: "1rem" }}>Añadir nueva sesión</h3>
-          <form
-            onSubmit={createChildSession}
-            style={{ display: "grid", gap: ".6rem", gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
-          >
+          <form onSubmit={createChildSession} className="session-form">
             <label>
               <span>Fecha (YYYY-MM-DD)</span>
               <input
@@ -580,7 +580,7 @@ export default function AdminPanel() {
               />
             </label>
 
-            <div style={{ display: "flex", alignItems: "end", gap: ".6rem" }}>
+            <div className="session-form-actions">
               <button type="submit" disabled={creatingChildSession}>
                 {creatingChildSession ? "Creando..." : "Crear sesión"}
               </button>
@@ -618,7 +618,7 @@ export default function AdminPanel() {
                       <div className="amr-texts" style={{ display: "grid", gap: ".35rem" }}>
                         <strong>Sesión #{key}</strong>
 
-                        <div style={{ display: "grid", gap: ".45rem", gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
+                        <div className="session-fields-grid">
                           <label>
                             <span>Fecha</span>
                             <input

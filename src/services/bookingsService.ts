@@ -31,7 +31,6 @@ interface BookingsService {
   removeBookingLocal: (id: Id) => void;
   clearBookings: () => void;
 
-  // -------- NUEVO: soporte por código de reserva --------
   // Queries (por código)
   fetchBookingByCode: (code: string) => Promise<Booking>;
   fetchBookingDetailByCode: (code: string) => Promise<{ booking: Booking; session: any }>;
@@ -44,7 +43,6 @@ interface BookingsService {
   fetchBookingAndSelect: (id: Id) => Promise<Booking>;
   fetchBookingDetail: (id: Id) => Promise<{ booking: Booking; session: any }>;
 
-  // -------- NUEVO: selección por código --------
   selectedBookingCode?: string;
   getBookingLocalByCode: (code: string) => Booking | undefined;
   selectBookingByCode: (code: string) => void;

@@ -1,4 +1,5 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react"
 import { useBookingsService } from "../services/bookingsService";
 import BookingTicket from "../components/BookingTicket";
 import "./TicketSearchPage.css";

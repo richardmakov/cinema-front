@@ -15,9 +15,7 @@
   z-index: 1000;
 
   height: var(--nav-height);
-  /* ← fija la altura del navbar */
   box-sizing: border-box;
-  /* padding incluido en la altura */
 }
 
 .nav-logo {
@@ -28,7 +26,7 @@
 }
 
 .nav-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bold;
 }
 
@@ -66,7 +64,6 @@
   }
 
   .submenu {
-    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -79,6 +76,7 @@
   }
 
   .submenu.open {
+    display: flex;
     animation: openSubmenu 0.3s forwards;
   }
 
@@ -123,7 +121,7 @@
   }
 
   .nav-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 
   .navbar-links {

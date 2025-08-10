@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useBookingsService } from "../services/bookingsService";
 import "./BookingTicket.css";
 
-type Id = string | number;
+type Id = string ;
 
 interface BookingTicketProps {
     bookingId: Id;

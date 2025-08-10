@@ -1,6 +1,5 @@
 .booking-page {
-    margin: calc(80px + 24px) auto 3rem; /* offset para navbar fijo */
-    max-width: 1100px;
+    margin: calc(80px + 24px) auto 3rem;
     padding: clamp(1rem, 3vw, 2rem);
     color: var(--primary-color);
     background: var(--lightgray-color);
@@ -8,6 +7,8 @@
     box-shadow: var(--shadow-lg);
     display: grid;
     gap: 1.5rem;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .booking-page h1 {
@@ -23,13 +24,16 @@
     border-radius: var(--radius);
     padding: clamp(1rem, 2vw, 1.5rem);
     box-shadow: var(--shadow-md);
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .booking-page {
         margin: calc(64px + 16px) auto 2.5rem;
-        padding: 1rem;
+        padding: .5rem;
+        overflow-x: clip;
     }
 
     .booking-page h1 {
