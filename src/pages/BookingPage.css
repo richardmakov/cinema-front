@@ -1,0 +1,38 @@
+.booking-page {
+    margin: calc(80px + 24px) auto 3rem; /* offset para navbar fijo */
+    max-width: 1100px;
+    padding: clamp(1rem, 3vw, 2rem);
+    color: var(--primary-color);
+    background: var(--lightgray-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    gap: 1.5rem;
+}
+
+.booking-page h1 {
+    margin: 0;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.booking-widget-container {
+    background: var(--white-color);
+    border-radius: var(--radius);
+    padding: clamp(1rem, 2vw, 1.5rem);
+    box-shadow: var(--shadow-md);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .booking-page {
+        margin: calc(64px + 16px) auto 2.5rem;
+        padding: 1rem;
+    }
+
+    .booking-page h1 {
+        font-size: 1.4rem;
+    }
+}

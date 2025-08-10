@@ -32,7 +32,8 @@ export interface Seat {
 // types/cinema.ts
 export interface Booking {
   id: string | number;
-  session: string | number;           // FK a Session
+  session: string | number; 
+  session_id: string | number;           // FK a Session
   nombre_cliente: string;
   email_cliente: string;
   telefono_cliente?: string;

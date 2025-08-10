@@ -1,0 +1,488 @@
+/* ===== Layout principal ===== */
+.admin-panel {
+    margin: calc(80px + 24px) auto 4rem;
+    /* offset para navbar fijo */
+    max-width: 1100px;
+    color: var(--primary-color);
+    padding: clamp(1rem, 3vw, 2rem);
+    background: var(--lightgray-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Título principal */
+.admin-panel>h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
+    color: var(--primary-color);
+}
+
+/* ===== Stats ===== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.stats p {
+    margin: 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--white-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-color);
+    font-weight: 500;
+}
+
+/* ===== Secciones ===== */
+.admin-panel section {
+    background: var(--white-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: clamp(1rem, 2.2vw, 1.5rem);
+    display: grid;
+    gap: 1rem;
+}
+
+.admin-panel section h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--primary-color);
+}
+
+/* ===== Formularios ===== */
+.admin-panel form {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-panel input,
+.admin-panel textarea,
+.admin-panel select {
+    background: var(--lightgray-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.9rem;
+    font: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-panel textarea {
+    grid-column: 1 / -1;
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* Hover / Focus */
+.admin-panel input:hover,
+.admin-panel textarea:hover,
+.admin-panel select:hover {
+    border-color: var(--secondary-color);
+}
+
+.admin-panel input:focus,
+.admin-panel textarea:focus,
+.admin-panel select:focus {
+    border-color: var(--red-color);
+    box-shadow: 0 0 0 3px rgba(235, 41, 51, 0.2);
+    outline: none;
+    background: #faf8f8;
+}
+
+/* ===== Toggle "Activa" (switch) ===== */
+.admin-panel label:has(input[type="checkbox"]) {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .45rem .7rem;
+    border-radius: var(--radius);
+    background: var(--white-color);
+    border: 1px solid var(--gray-color);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    width: fit-content;
+}
+
+.admin-panel label:has(input[type="checkbox"]:checked) {
+    border-color: rgba(235, 41, 51, 0.45);
+    box-shadow: 0 8px 20px rgba(235, 41, 51, 0.18);
+}
+
+.admin-panel label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 44px;
+    height: 24px;
+    background: var(--gray-color);
+    border: 1px solid #d5dadd;
+    border-radius: 999px;
+    position: relative;
+    outline: none;
+    transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.admin-panel label input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background: var(--white-color);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+    transition: left .2s ease;
+}
+
+.admin-panel label input[type="checkbox"]:checked {
+    background: var(--red-color);
+    border-color: #c8212a;
+}
+
+.admin-panel label input[type="checkbox"]:checked::after {
+    left: calc(100% - 21px);
+}
+
+.admin-panel label:hover input[type="checkbox"] {
+    border-color: var(--secondary-color);
+}
+
+.admin-panel label input[type="checkbox"]:focus-visible {
+    box-shadow: 0 0 0 3px rgba(235, 41, 51, 0.25);
+}
+
+.admin-panel label {
+    color: var(--primary-color);
+    font-weight: 600;
+    letter-spacing: .2px;
+}
+
+/* ===== Botones principales de formulario ===== */
+.admin-panel button[type="submit"] {
+    grid-column: 1 / -1;
+    background: var(--red-color);
+    color: var(--white-color);
+    font-weight: 600;
+    font-size: .9rem;
+    padding: 0.8rem 1.1rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 18px rgba(235, 41, 51, 0.35);
+}
+
+.admin-panel button[type="submit"]:hover {
+    background: #c8212a;
+    transform: translateY(-1px);
+}
+
+.admin-panel button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+.admin-panel button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===== Errores ===== */
+.admin-panel p[style*="red"] {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius);
+    background: rgba(235, 41, 51, 0.1);
+    color: var(--red-color) !important;
+    border: 1px solid var(--red-color);
+}
+
+/* ===== Lista de películas / sesiones ===== */
+.admin-movies-list {
+    display: grid;
+    gap: .75rem;
+}
+
+.admin-movie-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: .75rem;
+    background: var(--white-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: .75rem .9rem;
+    box-shadow: var(--shadow-md);
+}
+
+.amr-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .75rem;
+    align-items: center;
+}
+
+.amr-thumb {
+    width: 56px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--gray-color);
+    background: #fff;
+}
+
+.amr-texts {
+    display: grid;
+    gap: .1rem;
+}
+
+.amr-texts>strong {
+    color: var(--primary-color);
+}
+
+.amr-texts>span {
+    color: var(--secondary-color);
+    font-size: .95rem;
+}
+
+.amr-badge {
+    width: fit-content;
+    margin-top: .15rem;
+    padding: .15rem .5rem;
+    border-radius: 999px;
+    font-size: .8rem;
+    border: 1px solid var(--gray-color);
+}
+
+.amr-badge.on {
+    background: #e8fff3;
+    color: #137a46;
+    border-color: #b6e9cd;
+}
+
+.amr-badge.off {
+    background: #fff4f5;
+    color: #b0222a;
+    border-color: #f3b4b9;
+}
+
+.amr-actions {
+    display: flex;
+    gap: .5rem;
+}
+
+/* Botones de fila (editar / eliminar) */
+
+.edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.amr-actions button,
+.edit-header button,
+.edit-buttons .btn-secondary {
+    appearance: none;
+    border: 1px solid #d7dbe0;
+    background: var(--white-color);
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: .55rem .9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.amr-actions button:hover,
+.edit-header button:hover,
+.edit-buttons .btn-secondary:hover {
+    background: var(--lightgray-color);
+    border-color: #cfd5da;
+}
+
+/* Grupo de botones en el editor */
+.edit-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: .6rem;
+    align-items: center;
+}
+
+/* ===== Utilidades de botones ===== */
+.btn-primary {
+    background: var(--red-color);
+    color: var(--white-color);
+    border: none;
+    border-radius: var(--radius);
+    padding: .6rem .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(235, 41, 51, .25);
+}
+
+.btn-primary:hover {
+    background: #c8212a;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: .6rem .9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-ghost:hover {
+    background: var(--lightgray-color);
+}
+
+.btn-danger {
+    background: var(--red-color);
+    color: var(--white-color);
+    border: none;
+    border-radius: var(--radius);
+    padding: .6rem .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(235, 41, 51, .25);
+}
+
+.btn-danger:hover {
+    background: #c8212a;
+}
+
+.btn-danger-outline {
+    appearance: none !important;
+    border: 1px solid #f0b4b8 !important;
+    background: #fff7f8 !important;
+    color: #b0222a !important;
+    font-weight: 600 !important;
+    padding: .55rem .9rem !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    transition: background .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+}
+
+.btn-danger-outline:hover {
+    background: #ffecef !important;
+    border-color: #eaa2a7 !important;
+}
+
+/* ===== Modal de confirmación ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+    animation: fadeIn .18s ease-out;
+}
+
+.modal {
+    background: var(--white-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 440px;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--gray-color);
+    animation: popIn .18s ease-out;
+}
+
+.modal h4 {
+    margin: 0 0 .4rem 0;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.modal p {
+    margin: 0 0 1rem;
+    color: var(--secondary-color);
+}
+
+.modal-actions {
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: translateY(6px) scale(.98);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    .admin-panel form {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-movie-row {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .amr-actions {
+        justify-self: end;
+        margin-top: .5rem;
+        display: flex;
+        gap: .5rem;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-panel {
+        margin: calc(64px + 16px) auto 2.5rem;
+        padding: 1rem;
+    }
+
+    .amr-info {
+        grid-template-columns: 1fr;
+    }
+
+    .amr-thumb {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .amr-actions {
+        justify-self: end;
+    }
+}

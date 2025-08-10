@@ -1,0 +1,46 @@
+.ticket-search {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.hint {
+    color: #6b7280;
+    margin-top: .25rem;
+}
+
+.search-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .5rem;
+    margin: 1rem 0;
+}
+
+.search-form input {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: .55rem .75rem;
+    font-size: 1rem;
+}
+
+.search-form button {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: .55rem .9rem;
+    background: #fafafa;
+    cursor: pointer;
+}
+
+.search-form button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #b91c1c;
+    margin: .5rem 0;
+}
+
+.result {
+    margin-top: 1rem;
+}

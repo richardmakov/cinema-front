@@ -11,20 +11,45 @@ interface BookingsService {
   loading: boolean;
   error?: string;
 
-  // Queries
+  // Queries (por ID)
   fetchBookings: () => Promise<void>;
   fetchBooking: (id: Id) => Promise<Booking>;
-  fetchStats: () => Promise<Record<string, number>>; // { pendiente: n, confirmada: n, cancelada: n }
+  fetchStats: () => Promise<Record<string, number>>;
 
   // Mutations
-  createBooking: (payload: Omit<Partial<Booking>, "precio_total" | "estado" | "codigo_reserva" | "creado_en" | "id">) => Promise<Booking>;
+  createBooking: (
+    payload: Omit<
+      Partial<Booking>,
+      "precio_total" | "estado" | "codigo_reserva" | "creado_en" | "id"
+    >
+  ) => Promise<Booking>;
   deleteBooking: (id: Id) => Promise<void>;
   confirmBooking: (id: Id) => Promise<void>;
   cancelBooking: (id: Id) => Promise<void>;
 
-  // Local helpers (si las quieres mantener)
+  // Local helpers
   removeBookingLocal: (id: Id) => void;
   clearBookings: () => void;
+
+  // -------- NUEVO: soporte por código de reserva --------
+  // Queries (por código)
+  fetchBookingByCode: (code: string) => Promise<Booking>;
+  fetchBookingDetailByCode: (code: string) => Promise<{ booking: Booking; session: any }>;
+
+  // Estado/selección por ID (lo que ya tenías ampliado)
+  selectedBookingId?: Id;
+  getBookingLocal: (id: Id) => Booking | undefined;
+  selectBooking: (id: Id) => void;
+  getSelectedBooking: () => Booking | undefined;
+  fetchBookingAndSelect: (id: Id) => Promise<Booking>;
+  fetchBookingDetail: (id: Id) => Promise<{ booking: Booking; session: any }>;
+
+  // -------- NUEVO: selección por código --------
+  selectedBookingCode?: string;
+  getBookingLocalByCode: (code: string) => Booking | undefined;
+  selectBookingByCode: (code: string) => void;
+  getSelectedBookingByCode: () => Booking | undefined;
+  fetchBookingAndSelectByCode: (code: string) => Promise<Booking>;
 }
 
 export const useBookingsService = create<BookingsService>()(
@@ -52,8 +77,9 @@ export const useBookingsService = create<BookingsService>()(
           set({ loading: true, error: undefined });
           const booking = await fetchJson<Booking>(`/bookings/${idToKey(id)}/`);
           const list = get().bookings.slice();
-          const i = list.findIndex(b => idToKey(b.id) === idToKey(id));
-          if (i >= 0) list[i] = booking; else list.push(booking);
+          const i = list.findIndex((b) => idToKey(b.id) === idToKey(id));
+          if (i >= 0) list[i] = booking;
+          else list.push(booking);
           set({ bookings: list, loading: false });
           return booking;
         } catch (e: any) {
@@ -66,23 +92,12 @@ export const useBookingsService = create<BookingsService>()(
       fetchStats: async () => {
         try {
           return await fetchJson<Record<string, number>>("/bookings/stats/");
-        } catch (e) {
+        } catch {
           return {};
         }
       },
 
-      /**
-       * POST /bookings/
-       * payload mínimo que el backend necesita:
-       * - session (id)
-       * - nombre_cliente
-       * - email_cliente
-       * - telefono_cliente? (opcional)
-       * - asientos_seleccionados (JSON)
-       * - cantidad_asientos (number)
-       *
-       * precio_total lo calcula el backend (session.precio * cantidad)
-       */
+      // POST /bookings/
       createBooking: async (payload) => {
         try {
           set({ loading: true, error: undefined });
@@ -91,7 +106,10 @@ export const useBookingsService = create<BookingsService>()(
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-          set(state => ({ bookings: [...state.bookings, created], loading: false }));
+          set((state) => ({
+            bookings: [...state.bookings, created],
+            loading: false,
+          }));
           return created;
         } catch (e: any) {
           set({ loading: false, error: e?.message ?? "Error al crear la reserva" });
@@ -104,8 +122,10 @@ export const useBookingsService = create<BookingsService>()(
         try {
           set({ loading: true, error: undefined });
           await fetchJson<void>(`/bookings/${idToKey(id)}/`, { method: "DELETE" });
-          set(state => ({
-            bookings: state.bookings.filter(b => idToKey(b.id) !== idToKey(id)),
+          set((state) => ({
+            bookings: state.bookings.filter(
+              (b) => idToKey(b.id) !== idToKey(id)
+            ),
             loading: false,
           }));
         } catch (e: any) {
@@ -116,26 +136,100 @@ export const useBookingsService = create<BookingsService>()(
 
       // POST /bookings/:id/confirm/
       confirmBooking: async (id: Id) => {
-
-        await fetchJson<{ status: string }>(`/bookings/${idToKey(id)}/confirm/`, { method: "POST" });
-        // refrescamos la reserva en local
+        await fetchJson<{ status: string }>(
+          `/bookings/${idToKey(id)}/confirm/`,
+          { method: "POST" }
+        );
         await get().fetchBooking(id);
-
       },
 
       // POST /bookings/:id/cancel/
       cancelBooking: async (id: Id) => {
-
-        await fetchJson<{ status: string }>(`/bookings/${idToKey(id)}/cancel/`, { method: "POST" });
-        // refrescamos la reserva y (opcional) la sesión si llevas stock localmente
+        await fetchJson<{ status: string }>(
+          `/bookings/${idToKey(id)}/cancel/`,
+          { method: "POST" }
+        );
         await get().fetchBooking(id);
-
       },
 
-      // Helpers locales (opcionales)
+      // Helpers locales
       removeBookingLocal: (id: Id) =>
-        set(state => ({ bookings: state.bookings.filter(b => idToKey(b.id) !== idToKey(id)) })),
+        set((state) => ({
+          bookings: state.bookings.filter(
+            (b) => idToKey(b.id) !== idToKey(id)
+          ),
+        })),
       clearBookings: () => set({ bookings: [] }),
+
+      // GET /bookings/by_code/:code/
+      fetchBookingByCode: async (code: string) => {
+        const booking = await fetchJson<Booking>(
+          `/bookings/by_code/${encodeURIComponent(code)}/`
+        );
+        const list = get().bookings.slice();
+        const i = list.findIndex(b => b.codigo_reserva === booking.codigo_reserva);
+        if (i >= 0) list[i] = booking; else list.push(booking);
+        set({ bookings: list });
+        return booking;
+      },
+
+      fetchBookingDetailByCode: async (code: string) => {
+        const booking = await get().fetchBookingByCode(code);
+        const session = await fetchJson<any>(`/sessions/${String(booking.session)}/`);
+        return { booking, session };
+      },
+
+      selectedBookingId: undefined,
+
+      getBookingLocal: (id: Id) => {
+        const { bookings } = get();
+        return bookings.find((b) => idToKey(b.id) === idToKey(id));
+      },
+
+      selectBooking: (id: Id) => set({ selectedBookingId: id }),
+
+      getSelectedBooking: () => {
+        const { selectedBookingId, bookings } = get();
+        if (selectedBookingId == null) return undefined;
+        return bookings.find(
+          (b) => idToKey(b.id) === idToKey(selectedBookingId)
+        );
+      },
+
+      fetchBookingAndSelect: async (id: Id) => {
+        const booking = await get().fetchBooking(id);
+        set({ selectedBookingId: booking.id });
+        return booking;
+      },
+
+      fetchBookingDetail: async (id: Id) => {
+        const booking = await get().fetchBooking(id);
+        const session = await fetchJson<any>(
+          `/sessions/${idToKey(booking.session)}/`
+        );
+        return { booking, session };
+      },
+
+      selectedBookingCode: undefined,
+
+      getBookingLocalByCode: (code: string) => {
+        const { bookings } = get();
+        return bookings.find((b) => b.codigo_reserva === code);
+      },
+
+      selectBookingByCode: (code: string) => set({ selectedBookingCode: code }),
+
+      getSelectedBookingByCode: () => {
+        const { selectedBookingCode, bookings } = get();
+        if (!selectedBookingCode) return undefined;
+        return bookings.find((b) => b.codigo_reserva === selectedBookingCode);
+      },
+
+      fetchBookingAndSelectByCode: async (code: string) => {
+        const booking = await get().fetchBookingByCode(code);
+        set({ selectedBookingCode: booking.codigo_reserva });
+        return booking;
+      },
     }),
     { name: "bookings-storage" }
   )

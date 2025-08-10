@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSessionsService } from "../services/sessionsService";
 import { useBookingsService } from "../services/bookingsService";
+import './BookingWidget.css'
 
 type Id = string | number;
 
 interface Props {
-    sessionId: Id;               // id de la sesión
-    cols?: number;               // nº de butacas por fila (layout simple)
+    sessionId: Id;
+    cols?: number;
 }
 
 export default function BookingWidget({ sessionId, cols = 10 }: Props) {
@@ -22,14 +23,31 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchSession(sessionId); // trae la sesión con precio y asientos
+        fetchSession(sessionId);
     }, [sessionId, fetchSession]);
 
     const total = selectedSession?.asientos_totales ?? 0;
     const disponibles = selectedSession?.asientos_disponibles ?? 0;
     const precio = Number(selectedSession?.precio ?? 0);
 
-    // Genera un layout simple A1..A10, B1..B10, etc.
+    // 1) Obtener ocupadas (usa el campo que tengas disponible)
+    const occupiedSet = useMemo(() => {
+        // Opción A: el backend devuelve un array de asientos ocupados
+        const direct =
+            (selectedSession as any)?.asientos_ocupados ??
+            (selectedSession as any)?.asientosOcupados ??
+            [];
+
+        // Opción B: derivar de las reservas de la sesión (si vienen embebidas)
+        const fromBookings =
+            (selectedSession as any)?.reservas?.flatMap(
+                (r: any) => r.asientos_seleccionados ?? r.asientosSeleccionados ?? []
+            ) ?? [];
+
+        const seats = (direct.length ? direct : fromBookings) as string[];
+        return new Set(seats);
+    }, [selectedSession]);
+
     const seatMap = useMemo(() => {
         if (!total) return [];
         const rows = Math.ceil(total / cols);
@@ -51,6 +69,9 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
     const maxSelectable = Math.min(disponibles || 0, total || 0);
 
     const toggleSeat = (seat: string) => {
+        // 2) Evitar seleccionar ocupadas
+        if (occupiedSet.has(seat)) return;
+
         setSelectedSeats((prev) => {
             const exists = prev.includes(seat);
             if (exists) return prev.filter((s) => s !== seat);
@@ -82,19 +103,22 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
         try {
             setSubmitting(true);
             const booking = await createBooking({
-                session: selectedSession.id,                 // 👈 FK
+                session: selectedSession.id,
+                session_id: selectedSession.id,
                 nombre_cliente: nombre,
                 email_cliente: email,
                 telefono_cliente: telefono || undefined,
-                asientos_seleccionados: selectedSeats,       // JSON
+                asientos_seleccionados: selectedSeats,
                 cantidad_asientos: selectedSeats.length,
-                // precio_total lo calcula el backend
             });
             setSuccessMsg(`¡Reserva creada! Código: ${booking.codigo_reserva}`);
             setSelectedSeats([]);
             setNombre("");
             setEmail("");
             setTelefono("");
+
+            // 3) Refrescar la sesión para que se actualicen ocupadas
+            fetchSession(sessionId);
         } catch (err: any) {
             setErrorMsg(err?.message ?? "No se pudo crear la reserva.");
         } finally {
@@ -120,18 +144,28 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
 
                     <div className="screen">Pantalla</div>
 
+                    <div className="legend">
+                        <span className="seat legend-item" /> Libre
+                        <span className="seat selected legend-item" /> Seleccionada
+                        <span className="seat occupied legend-item" /> Ocupada
+                    </div>
+
                     <div className="seats-grid">
                         {seatMap.map((row, ri) => (
                             <div key={ri} className="seat-row">
                                 {row.map((seat) => {
                                     const selected = selectedSeats.includes(seat);
+                                    const occupied = occupiedSet.has(seat);
                                     return (
                                         <button
                                             key={seat}
                                             type="button"
-                                            className={`seat ${selected ? "selected" : ""}`}
+                                            className={`seat ${selected ? "selected" : ""} ${occupied ? "occupied" : ""}`}
                                             onClick={() => toggleSeat(seat)}
                                             aria-pressed={selected}
+                                            aria-disabled={occupied}
+                                            disabled={occupied}
+                                            title={occupied ? "Butaca ocupada" : `Butaca ${seat}`}
                                         >
                                             {seat}
                                         </button>
@@ -181,10 +215,13 @@ export default function BookingWidget({ sessionId, cols = 10 }: Props) {
         .booking-widget { display: grid; gap: 1rem; }
         .session-info { display: grid; gap: .25rem; }
         .screen { text-align: center; padding: .5rem; background: #eee; border-radius: 8px; }
+        .legend { display: flex; align-items: center; gap: .75rem; font-size: .9rem; }
+        .legend-item { width: 1.2rem; height: 1.2rem; display: inline-block; vertical-align: middle; }
         .seats-grid { display: grid; gap: .5rem; }
         .seat-row { display: grid; grid-template-columns: repeat(${cols}, 1fr); gap: .4rem; }
-        .seat { border: 1px solid #ccc; padding: .4rem; border-radius: 6px; cursor: pointer; }
+        .seat { border: 1px solid #ccc; padding: .4rem; border-radius: 6px; cursor: pointer; background: #fff; }
         .seat.selected { outline: 2px solid #333; }
+        .seat.occupied { background: #ddd; color: #777; cursor: not-allowed; border-color: #bbb; }
         .booking-form { display: grid; gap: .5rem; }
         .summary { background: #f8f8f8; padding: .5rem; border-radius: 8px; }
       `}</style>

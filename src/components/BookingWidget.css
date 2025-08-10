@@ -1,0 +1,223 @@
+:root {
+    --primary-color: #171212;
+    --secondary-color: #876363;
+    --white-color: #ffffff;
+    --lightgray-color: #F5F0F0;
+    --red-color: #EB2933;
+    --gray-color: #E5E8EB;
+
+    --radius: 12px;
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, .12);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, .18);
+}
+
+/* ===== BookingWidget ===== */
+.booking-widget {
+    display: grid;
+    gap: 1.25rem;
+    color: var(--primary-color);
+}
+
+/* cabecera sesión */
+.session-info {
+    display: grid;
+    gap: .25rem;
+    background: var(--white-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: .9rem 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+.session-info p {
+    margin: 0;
+    color: var(--secondary-color);
+}
+
+.session-info p strong {
+    color: var(--primary-color);
+}
+
+/* pantalla */
+.screen {
+    text-align: center;
+    padding: .6rem 1rem;
+    background: var(--lightgray-color);
+    border: 1px solid var(--gray-color);
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    box-shadow: inset 0 -3px 8px rgba(0, 0, 0, .06);
+}
+
+/* grilla de asientos */
+.seats-grid {
+    display: grid;
+    gap: .6rem;
+    background: var(--white-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+.seat-row {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    /* se sobreescribe visualmente, no afecta al JS */
+    gap: .45rem;
+}
+
+/* asiento base */
+.seat {
+    appearance: none;
+    border: 1px solid #d6dbe0;
+    background: #fafbfc;
+    padding: .55rem 0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    line-height: 1;
+    transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    user-select: none;
+}
+
+/* hover/focus */
+.seat:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .09);
+    border-color: var(--secondary-color);
+}
+
+.seat:focus-visible {
+    outline: 3px solid rgba(235, 41, 51, .28);
+    outline-offset: 2px;
+}
+
+/* seleccionado */
+.seat.selected {
+    background: #fff0f1;
+    border-color: var(--red-color);
+    box-shadow: 0 6px 16px rgba(235, 41, 51, .2);
+    color: var(--red-color);
+}
+
+/* (opcional) asiento no disponible si algún día lo marcas con .disabled */
+.seat.disabled {
+    cursor: not-allowed;
+    opacity: .55;
+    background: #f3f5f7;
+    border-style: dashed;
+}
+
+/* formulario */
+.booking-form {
+    display: grid;
+    gap: .8rem;
+}
+
+.booking-form input {
+    background: var(--lightgray-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: .75rem .9rem;
+    font: inherit;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.booking-form input:hover {
+    border-color: var(--secondary-color);
+}
+
+.booking-form input:focus {
+    border-color: var(--red-color);
+    box-shadow: 0 0 0 3px rgba(235, 41, 51, .2);
+    outline: none;
+}
+
+/* resumen */
+.summary {
+    background: var(--white-color);
+    border: 1px solid var(--gray-color);
+    border-radius: var(--radius);
+    padding: .8rem 1rem;
+    box-shadow: var(--shadow-md);
+    display: grid;
+    gap: .25rem;
+}
+
+.summary p {
+    margin: 0;
+}
+
+.summary p strong {
+    color: var(--primary-color);
+}
+
+/* botón confirmar */
+.booking-form button[type="submit"] {
+    appearance: none;
+    border: none;
+    background: var(--red-color);
+    color: var(--white-color);
+    font-weight: 700;
+    padding: .85rem 1.15rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+    box-shadow: 0 10px 26px rgba(235, 41, 51, .28);
+}
+
+.booking-form button[type="submit"]:hover {
+    transform: translateY(-1px);
+    background: #c8212a;
+    box-shadow: 0 14px 32px rgba(235, 41, 51, .34);
+}
+
+.booking-form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+.booking-form button[disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* mensajes */
+.booking-form p[style*="red"] {
+    margin: 0;
+    padding: .6rem .8rem;
+    border-radius: 10px;
+    background: rgba(235, 41, 51, .08);
+    color: var(--red-color) !important;
+    border: 1px solid var(--red-color);
+}
+
+.booking-form p[style*="green"] {
+    margin: 0;
+    padding: .6rem .8rem;
+    border-radius: 10px;
+    background: #e9f9f1;
+    color: #0f8a53 !important;
+    border: 1px solid #b8ebd2;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .seat-row {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .seat-row {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media (max-width: 420px) {
+    .seat-row {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
