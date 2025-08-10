@@ -1,54 +1,83 @@
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useMoviesService } from '../services/moviesService';
-import { useSessionsService } from '../services/sessionsService';
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // 👈 importamos useNavigate
+import { useMoviesService } from "../services/moviesService";
+import { useSessionsService } from "../services/sessionsService";
 
 export default function MovieDetails() {
   const { id } = useParams();
-  const { selectedMovie, fetchMovies, selectMovie, clearSelection } =
-    useMoviesService();
-  const { sessions, fetchSessions } = useSessionsService();
+  const navigate = useNavigate(); // 👈 hook de navegación
+
+  const {
+    selectedMovie,
+    fetchMovie,
+    clearSelection,
+    loading: movieLoading,
+    error: movieError,
+  } = useMoviesService();
+
+  const {
+    sessions,
+    fetchSessions,
+    loading: sessionsLoading,
+    error: sessionsError,
+  } = useSessionsService();
 
   useEffect(() => {
+    if (!id) return;
     (async () => {
-      await fetchMovies();
-      if (id) {
-        selectMovie(id);
-        fetchSessions(id);
-      }
+      await fetchMovie(id);
+      await fetchSessions(id);
     })();
     return () => {
       clearSelection();
     };
-  }, [id, fetchMovies, selectMovie, fetchSessions, clearSelection]);
+  }, [id, fetchMovie, fetchSessions, clearSelection]);
 
-  if (!selectedMovie) {
-    return <p>Cargando...</p>;
-  }
+  if (movieLoading && !selectedMovie) return <p>Cargando película...</p>;
+  if (movieError && !selectedMovie)
+    return <p style={{ color: "red" }}>{movieError}</p>;
+  if (!selectedMovie) return <p>No se encontró la película.</p>;
 
   return (
     <div className="movie-details">
-      <img src={selectedMovie.poster} alt={selectedMovie.title} />
+      <img
+        src={selectedMovie.poster_url || "/placeholder-poster.png"}
+        alt={selectedMovie.titulo}
+      />
       <div className="info">
-        <h2>{selectedMovie.title}</h2>
-        <p>{selectedMovie.synopsis}</p>
+        <h2>{selectedMovie.titulo}</h2>
+        <p>{selectedMovie.descripcion}</p>
+
         <p>
-          <strong>Duración:</strong> {selectedMovie.duration} min
+          <strong>Duración:</strong> {selectedMovie.duracion} min
         </p>
         <p>
-          <strong>Director:</strong> {selectedMovie.director}
+          <strong>Género:</strong> {selectedMovie.genero || "—"}
         </p>
         <p>
-          <strong>Reparto:</strong> {selectedMovie.cast.join(', ')}
+          <strong>Clasificación:</strong> {selectedMovie.clasificacion || "—"}
         </p>
+
         <h3>Sesiones</h3>
-        <ul>
-          {sessions.map((s) => (
-            <li key={s.id}>
-              {s.date} {s.time} - Sala {s.room}
-            </li>
-          ))}
-        </ul>
+        {sessionsLoading && <p>Cargando sesiones...</p>}
+        {sessionsError && <p style={{ color: "red" }}>{sessionsError}</p>}
+        {!sessionsLoading && sessions.length === 0 ? (
+          <p>No hay sesiones disponibles.</p>
+        ) : (
+          <ul>
+            {sessions.map((s) => (
+              <li key={String(s.id)}>
+                {s.fecha} {s.hora} — Sala {s.sala}
+                {"  "}
+                <button
+                  onClick={() => navigate(`/booking/${s.id}`)} // 👈 redirige al booking
+                >
+                  Reservar
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

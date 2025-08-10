@@ -1,24 +1,23 @@
 export interface Movie {
   id: string;
-  title: string;
-  duration: number; // en minutos
-  genre: string;
-  rating: string;
-  synopsis: string;
-  poster: string;
-  director: string;
-  cast: string[];
+  titulo: string;
+  descripcion: string;
+  duracion: number;
+  genero: string;
+  clasificacion: string;
+  poster_url: string;
+  activa: boolean;
 }
 
 export interface Session {
-  id: string;
-  movieId: string;
-  date: string;
-  time: string;
-  room: string;
-  price: number;
-  availableSeats: number;
-  totalSeats: number;
+  id: string;                 
+  movie_id: string | number;     
+  fecha: string;              
+  hora: string;               
+  sala: string;
+  precio: number;
+  asientos_totales: number;
+  asientos_disponibles: number;
 }
 
 export interface Seat {
@@ -30,16 +29,17 @@ export interface Seat {
   type: 'normal' | 'premium' | 'disabled';
 }
 
-export interface Ticket {
-  id: string;
-  sessionId: string;
-  movieTitle: string;
-  date: string;
-  time: string;
-  room: string;
-  seats: Seat[];
-  totalPrice: number;
-  purchaseDate: string;
-  customerName: string;
-  customerEmail: string;
+// types/cinema.ts
+export interface Booking {
+  id: string | number;
+  session: string | number;           // FK a Session
+  nombre_cliente: string;
+  email_cliente: string;
+  telefono_cliente?: string;
+  asientos_seleccionados: any;        // JSON (puede ser Seat[] o estructura equivalente)
+  cantidad_asientos: number;
+  precio_total: number;               // lo calcula el backend al crear
+  estado: "pendiente" | "confirmada" | "cancelada";
+  codigo_reserva: string;
+  creado_en: string;                  // ISO datetime
 }
