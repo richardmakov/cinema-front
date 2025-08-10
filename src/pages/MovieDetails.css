@@ -1,0 +1,167 @@
+/* ===== MovieDetails ===== */
+.movie-details {
+    --md-bg: #0f1115;
+    --md-card: #161a22;
+    --md-text: #e9ecf1;
+    --md-muted: #a7b0be;
+    --md-accent: #3b82f6;
+    /* azul botón */
+    --md-accent-2: #10b981;
+    /* verde suave para badges si quieres */
+    --radius: 16px;
+
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: clamp(1rem, 3vw, 2rem);
+    color: var(--md-text);
+    background: linear-gradient(180deg, #0b0d12 0%, #0b0d12cc 100%);
+    border-radius: var(--radius);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: clamp(1rem, 3vw, 2rem);
+    margin-top: calc(var(--nav-height) + 24px); /* separa del navbar */
+}
+
+/* Poster */
+.movie-details>img {
+    width: 100%;
+    height: auto;
+    border-radius: calc(var(--radius) - 4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    background: #0b0d12;
+    object-fit: contain;
+    align-self: start;
+}
+
+/* Panel de info */
+.movie-details .info {
+    background: var(--md-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: calc(var(--radius) - 6px);
+    padding: clamp(1rem, 2.4vw, 1.5rem);
+    display: grid;
+    gap: 0.85rem;
+}
+
+/* Título y texto */
+.movie-details .info h2 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.15;
+    margin: 0 0 .25rem 0;
+    letter-spacing: .2px;
+}
+
+.movie-details .info p {
+    margin: 0;
+    color: var(--md-muted);
+}
+
+/* Metadatos (duración, género, clasificación) */
+.movie-details .info p strong {
+    color: var(--md-text);
+    font-weight: 600;
+}
+
+/* Sección de sesiones */
+.movie-details .info h3 {
+    margin-top: .75rem;
+    font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+    letter-spacing: .3px;
+}
+
+.movie-details .info ul {
+    list-style: none;
+    margin: .5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: .6rem;
+}
+
+/* Cada fila de sesión */
+.movie-details .info li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: .75rem;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: .75rem .9rem;
+    border-radius: 12px;
+}
+
+/* Botón Reservar */
+.movie-details .info li button {
+    appearance: none;
+    border: none;
+    background: var(--md-accent);
+    color: white;
+    font-weight: 600;
+    padding: .55rem .9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+    box-shadow: 0 6px 18px rgba(59, 130, 246, .35);
+    white-space: nowrap;
+}
+
+.movie-details .info li button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(59, 130, 246, .45);
+    background: #316dd6;
+}
+
+.movie-details .info li button:active {
+    transform: translateY(0);
+}
+
+/* Estados de carga/errores dentro de info */
+.movie-details .info p[style*="red"] {
+    background: #2a0e12;
+    color: #ffb3bd !important;
+    border: 1px solid #551821;
+    padding: .6rem .8rem;
+    border-radius: 10px;
+}
+
+.movie-details .info p:has(strong) {
+    /* ligera separación visual para líneas con label */
+    padding: .15rem 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    .movie-details {
+        grid-template-columns: 300px 1fr;
+    }
+}
+
+@media (max-width: 780px) {
+    .movie-details {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .movie-details>img {
+        max-width: 420px;
+        justify-self: center;
+    }
+
+    .movie-details .info li {
+        grid-template-columns: 1fr;
+        gap: .5rem;
+    }
+
+    .movie-details .info li button {
+        justify-self: start;
+        /* o center si prefieres */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .movie-details,
+    .movie-details .info li button {
+        transition: none !important;
+    }
+}

@@ -1,19 +1,15 @@
-import './App.css';
+
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import MovieDetails from './pages/MovieDetails';
 import AdminPanel from './pages/AdminPanel';
 import BookingPage from './pages/BookingPage';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <BrowserRouter>
-      <header>
-        <nav>
-          <Link to="/">Cartelera</Link>
-          <Link to="/admin">Admin</Link>
-        </nav>
-      </header>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movies/:id" element={<MovieDetails />} />

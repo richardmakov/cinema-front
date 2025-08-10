@@ -1,0 +1,51 @@
+
+:root {
+  --nav-height: 80px; /* altura base del navbar */
+}
+.navbar {
+  background-color: var(--gray-color);
+  padding: 1.25rem 3rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 3rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+
+  height: var(--nav-height);     /* ← fija la altura del navbar */
+  box-sizing: border-box;        /* padding incluido en la altura */
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.nav-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar-links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 3rem;
+    font-weight: 500;
+}
+
+/* Responsive: móviles */
+@media (max-width: 600px) {
+  :root { --nav-height: 64px; }  /* navbar más bajo en móvil */
+  .nav-title { font-size: 1rem; }
+  .navbar-links { font-size: .8rem; }
+}
+
+/* Extra pequeño */
+@media (max-width: 400px) {
+  :root { --nav-height: 56px; }
+}

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // 👈 importamos useNavigate
 import { useMoviesService } from "../services/moviesService";
 import { useSessionsService } from "../services/sessionsService";
+import './MovieDetails.css';
 
 export default function MovieDetails() {
   const { id } = useParams();
@@ -70,7 +71,7 @@ export default function MovieDetails() {
                 {s.fecha} {s.hora} — Sala {s.sala}
                 {"  "}
                 <button
-                  onClick={() => navigate(`/booking/${s.id}`)} // 👈 redirige al booking
+                  onClick={() => navigate(`/booking/${s.id}`)}
                 >
                   Reservar
                 </button>
