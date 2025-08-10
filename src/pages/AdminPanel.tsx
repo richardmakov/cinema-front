@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useMoviesStore } from '../stores/moviesStore';
-import { useSessionsStore } from '../stores/sessionsStore';
+import { useMoviesService } from '../services/moviesService';
+import { useSessionsService } from '../services/sessionsService';
 
 export default function AdminPanel() {
-  const { movies, addMovie } = useMoviesStore();
-  const { sessions, addSession } = useSessionsStore();
+  const { movies, addMovie } = useMoviesService();
+  const { sessions, addSession } = useSessionsService();
 
   const [movieForm, setMovieForm] = useState({
     title: '',
@@ -149,7 +149,9 @@ export default function AdminPanel() {
             placeholder="Asientos totales"
             type="number"
             value={sessionForm.totalSeats}
-            onChange={(e) => setSessionForm({ ...sessionForm, totalSeats: Number(e.target.value) })}
+            onChange={(e) =>
+              setSessionForm({ ...sessionForm, totalSeats: Number(e.target.value) })
+            }
           />
           <button type="submit">Guardar Sesión</button>
         </form>

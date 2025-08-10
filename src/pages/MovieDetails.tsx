@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useMoviesStore } from '../stores/moviesStore';
-import { useSessionsStore } from '../stores/sessionsStore';
+import { useMoviesService } from '../services/moviesService';
+import { useSessionsService } from '../services/sessionsService';
 
 export default function MovieDetails() {
   const { id } = useParams();
   const { selectedMovie, fetchMovies, selectMovie, clearSelection } =
-    useMoviesStore();
-  const { sessions, fetchSessions } = useSessionsStore();
+    useMoviesService();
+  const { sessions, fetchSessions } = useSessionsService();
 
   useEffect(() => {
     (async () => {

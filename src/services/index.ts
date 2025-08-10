@@ -1,4 +1,4 @@
 export * from './api';
-export * from './moviesService';
-export * from './sessionsService';
-export * from './bookingsService';
+export { useMoviesService } from './moviesService';
+export { useSessionsService } from './sessionsService';
+export { useBookingsService } from './bookingsService';
