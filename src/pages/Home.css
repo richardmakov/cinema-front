@@ -82,7 +82,7 @@
     pointer-events: none;
     transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
     z-index: 1;
-
+    text-wrap: nowrap;
     background: var(--secondary-color);
     color: #fff;
     text-decoration: none;
